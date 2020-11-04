@@ -12,7 +12,7 @@ def Lab2(n,from_floor,to_floor,intermediate_floor):
         print("Moved Box 1 from",from_floor,"to",to_floor)
         return
     Lab2(n-1,from_floor,intermediate_floor,to_floor)
-    print("Move Box",n,"from",from_floor,"to",to_floor)
+    print("Moved Box",n,"from",from_floor,"to",to_floor)
     Lab2(n-1,intermediate_floor,to_floor,from_floor)
     
 if __name__ == "__main__":
