@@ -19,7 +19,6 @@ class Floor:
     """
     Prints current stack and stack to the right recursively
     """
-
     if self.up is None:
       return_string = '_'
     else:
@@ -86,11 +85,11 @@ class Block:
     if self.right is None:
       return True # If block is on the rightmost spot, terminate
     if self.up is not None:
-      self.up.moveR()  # If there is block(s) above move it all the way right first
+      self.up.moveR()  # If there is/are block(s) above move it/them all the way right first
       return self.moveR()
-    if self.right.top() is not None:              # If there is block(s) on the right
-      if self.right.top().value < self.value:  # Move it all the way left first
-        self.right.top().moveL()
+    if self.right.top() is not None:           # If there is block(s) on the right
+      if self.right.top().value < self.value:  # AND those blocks cannot be stacked upon
+        self.right.top().moveL()               # Move that block all the way left first
         return self.moveR()
     
     self.stack_on(self.right.top())  # now current block is free to move right
