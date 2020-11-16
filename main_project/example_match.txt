@@ -1,0 +1,16 @@
+http://sharonkuo.me/dota2/matchdetails.html
+
+"avg_mmr": null,                                # the skill of players
+        "avg_rank_tier": 24,                    # the skill of players (differetn measurements)
+        "cluster": 184,                         # Which server the match was played on US West, Europe West etc
+        "dire_team": "43,52,62,42,34",          # the 5 heroes played by dire by hero id
+        "duration": 661,                        # duration in seconds
+        "game_mode": 22,                        # game mode: Captains draft, Ranked all pick, etc
+        "lobby_type": 0,                        # lobby type: Ranked, Team match, Solo mid 1 vs. 1 etc 
+        "match_id": 5703879603,                 # inique id of match
+        "match_seq_num": 4797457482,            # the match number
+        "num_mmr": null,                        #
+        "num_rank_tier": 2,                     #
+        "radiant_team": "31,88,50,41,93",       # the 5 heroes played by radiant by hero id
+        "radiant_win": true,                    # Wheter radiaon won or not
+        "start_time": 1605540810                # Unix timestamp of when the match began (since Jan 1, 1970)
