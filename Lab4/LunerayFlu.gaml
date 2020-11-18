@@ -9,7 +9,7 @@ model Lab4
 /* Insert your model definition here */
 global {
     int nb_people <- 2147;// The given population of Luneray
-    int nb_infected_init <- 5;// The number of people that are intially infected 
+    int nb_infected_init <- 5;// The number of people that are initially infected 
     float step <- 5 #mn;// The simulation step
 	
 	// The number of people infected starts at 5 and is updated constantly by using update
@@ -58,7 +58,7 @@ species people skills:[moving]{
     		  at: location + {0,0,7} rotate: heading - 90 color: is_infected ? #red : #green;
     	}
     }
-    // This is activated when the agent is in the house and using the probabaility of 0.05 whether the agent
+    // This is activated when the agent is in the house and using the probability of 0.05 whether the agent
     // has to go out or not
     reflex stay when: target = nil{
     	if flip(0.05){
