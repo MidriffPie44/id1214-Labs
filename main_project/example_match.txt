@@ -1,6 +1,6 @@
 http://sharonkuo.me/dota2/matchdetails.html
 
-"avg_mmr": null,                                # the skill of players
+        "avg_mmr": null,                        # the skill of players
         "avg_rank_tier": 24,                    # the skill of players (differetn measurements)
         "cluster": 184,                         # Which server the match was played on US West, Europe West etc
         "dire_team": "43,52,62,42,34",          # the 5 heroes played by dire by hero id
