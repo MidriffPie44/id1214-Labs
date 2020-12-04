@@ -2,7 +2,6 @@ import keras.layers as layers
 import keras.optimizers as optimizers
 from keras import Sequential
 import numpy as np
-import random
 
 import csv
 
@@ -49,9 +48,7 @@ def train_model(model, samples, labels, epochs, batch_size):
 
 if __name__ == '__main__':
     data_samples, data_labels = create_training_data(40000)
-    #print(data_samples)
-    #print(data_labels)
-    eval_samples, eval_labels = create_training_data(100)
+    eval_samples, eval_labels = create_training_data(30)
 
     net = create_new_seq_model()
 
@@ -64,6 +61,3 @@ if __name__ == '__main__':
 
     print('Predictions:\t', [eval_prediction.index(max(eval_prediction)) for eval_prediction in eval_predictions])
     print('Labels:\t\t\t', [eval_label.index(max(eval_label)) for eval_label in eval_labels])
-
-
-
