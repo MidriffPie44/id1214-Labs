@@ -26,7 +26,7 @@ grammar = CFG.fromstring("""
         N -> 'boys'
         N -> 'crackers'
         V -> 'eats'
-        V -> 'run' | 'runs
+        V -> 'run' | 'runs'
         VBP -> 'are'
         VBZ -> 'is'
         VBZ -> 'likes'
