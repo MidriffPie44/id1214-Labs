@@ -10,7 +10,8 @@ from nltk.parse.generate import generate
 grammar = CFG.fromstring("""
         S ->  NP VP 
         NP -> Det 
-        VP -> NLNP VBP Adj |LN PV RB |LN PV | LN VBZ NP | LNP V RB | NLN VBZ Adj | LN LVBZ 'the' LN
+        VP -> NLNP VBP Adj |LN PV RB |LN PV | LN VBZ NP | LNP V RB | NLN VBZ Adj 
+        VP -> LN LVBZ 'the' LN | LN LVBZ 'the' NLN |LN LVBZ 'the' NLNP
         Det -> 'Those'
         Det -> 'A'
         Det -> 'the'
