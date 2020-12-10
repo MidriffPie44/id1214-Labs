@@ -19,14 +19,14 @@ grammar = CFG.fromstring("""
         Det -> 'The'
         Det -> 'A'
         Det -> 'the'
+        Det -> 'that
         Det -> 'Those'
         N -> 'girl' | 'dog'
         N -> 'boy' | 'house'
         N -> 'boys'
         N -> 'crackers'
         V -> 'eats'
-        V -> 'runs'
-        V -> 'run'
+        V -> 'run' | 'runs
         VBP -> 'are'
         VBZ -> 'is'
         VBZ -> 'likes'
