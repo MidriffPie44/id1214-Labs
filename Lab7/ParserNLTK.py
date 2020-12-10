@@ -8,23 +8,21 @@ import nltk
 from nltk import Nonterminal,nonterminals,Production,CFG
 w1 = Nonterminal("NP")
 w2 = Nonterminal("VP")
-S,NP,VP,PP = nonterminals('S,NP,VP,PP')
-N, V, P, DT,VBP,Adj,VBZ,RB= nonterminals('N, V, P, DT, VBP, Adj,VBZ,RB')
+S,NP,VP = nonterminals('S,NP,VP')
+NLN,LN,V,LNP,DT,VBP,Adj,VBZ,RB= nonterminals('NLN,LN,V,LNP, DT, VBP, Adj,VBZ,RB')
 prod1 = Production(S, [NP, VP])
 prod2 = Production(NP, [DT, NP])
 grammar = CFG.fromstring("""
-        S -> NP VP
-        NP -> Det N 
-        VP -> V NP | VP PP | VBP Adj | VBZ Adj | V RB | V | VBZ NP
+        S ->  NP VP 
+        NP -> Det LN | Det NLN | 'Those' LNP
+        VP -> V NP | VBP Adj | VBZ Adj |LN V RB |LN V | VBZ NP
         Det -> 'The'
         Det -> 'A'
         Det -> 'the'
-        Det -> 'that
-        Det -> 'Those'
-        N -> 'girl' | 'dog'
-        N -> 'boy' | 'house'
-        N -> 'boys'
-        N -> 'crackers'
+        Det -> 'that'
+        LN -> 'girl' | 'boy' | 'dog' 
+        LNP -> 'boys'
+        NLN -> 'house' | 'crackers'
         V -> 'eats'
         V -> 'run' | 'runs'
         VBP -> 'are'
@@ -44,8 +42,14 @@ sentence = ['The girl likes the dog.',
             'The house is big.',
            'The dog is happy.']
 parser = nltk.ChartParser(grammar)
-n = int(input("Enter the number of sentences you wan to parse:- "))
+n = int(input("Enter the number of sentences you want to parse:- "))
 for i in range(n):
     sentence[i] = input().split()
     for t in parser.parse(sentence[i]):
-        print(t)
+         print(t)
+        
+
+ 
+    
+
+       
