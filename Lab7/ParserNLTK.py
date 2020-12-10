@@ -14,8 +14,8 @@ prod1 = Production(S, [NP, VP])
 prod2 = Production(NP, [DT, NP])
 grammar = CFG.fromstring("""
         S ->  NP VP 
-        NP -> Det LN | Det NLN | 'Those' LNP
-        VP -> V NP | VBP Adj | VBZ Adj |LN V RB |LN V | VBZ NP
+        NP -> Det  | Det NLN | Det LNP
+        VP -> V NP | VBP Adj | VBZ Adj |LN V RB | LN V | VBZ NP
         Det -> 'The'
         Det -> 'A'
         Det -> 'the'
