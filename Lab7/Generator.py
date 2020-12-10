@@ -12,11 +12,11 @@ grammar = CFG.fromstring("""
         NP -> Det 
         VP -> NLNP VBP Adj |LN PV RB |LN PV | LN VBZ NP | LNP V RB | NLN VBZ Adj 
         VP -> LN LVBZ 'the' LN | LN LVBZ 'the' NLN |LN LVBZ 'the' NLNP
-        Det -> 'Those'
+        Det -> 'The'
         Det -> 'A'
         Det -> 'the'
         Det -> 'that'
-        Det -> 'The'
+        Det -> 'Those'
         LN -> 'girl' | 'boy' | 'dog' 
         LNP -> 'boys'
         NLN -> 'house'
@@ -31,5 +31,5 @@ grammar = CFG.fromstring("""
         EAdj -> 'happy'
         Adj -> 'big'
     """)
-for sentence in generate(grammar,depth=4):
+for sentence in generate(grammar,n=10):
     print(' '.join(sentence))
