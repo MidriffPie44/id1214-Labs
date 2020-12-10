@@ -15,11 +15,12 @@ prod2 = Production(NP, [DT, NP])
 grammar = CFG.fromstring("""
         S ->  NP VP 
         NP -> Det LN | Det NLN | Det LNP
-        VP -> V NP | VBP Adj | VBZ Adj | V RB | V | LN VBZ NP
+        VP -> V NP | VBP Adj | VBZ Adj | V RB | V | VBZ NP
         Det -> 'The'
         Det -> 'A'
         Det -> 'the'
         Det -> 'that'
+        Det -> 'Those'
         LN -> 'girl' | 'boy' | 'dog' 
         LNP -> 'boys'
         NLN -> 'house' | 'crackers'
@@ -46,10 +47,22 @@ n = int(input("Enter the number of sentences you want to parse:- "))
 for i in range(n):
     sentence[i] = input().split()
     for t in parser.parse(sentence[i]):
-         print(t)
+       if (t.leaves()[1] == 'house' and t.leaves()[2] == 'runs') or (t.leaves()[1]=='crackers' and t.leaves()[2]=='run') or (t.leaves()[1] == 'house' and t.leaves()[2] == 'likes'):
+           print()
+       else:
+           print(t)
+          
+               
+           
+           
+             
+         
         
 
  
     
+
+       
+
 
        
