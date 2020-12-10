@@ -13,35 +13,37 @@ NLN,LN,V,LNP,DT,VBP,Adj,VBZ,RB= nonterminals('NLN,LN,V,LNP, DT, VBP, Adj,VBZ,RB'
 prod1 = Production(S, [NP, VP])
 prod2 = Production(NP, [DT, NP])
 grammar = CFG.fromstring("""
-        S ->  NP VP 
-        NP -> Det LN | Det NLN | Det LNP
-        VP -> V NP | VBP Adj | VBZ Adj | V RB | V | VBZ NP
-        Det -> 'The'
-        Det -> 'A'
-        Det -> 'the'
-        Det -> 'that'
-        Det -> 'Those'
-        LN -> 'girl' | 'boy' | 'dog' 
-        LNP -> 'boys'
-        NLN -> 'house' | 'crackers'
-        V -> 'eats'
-        V -> 'run' | 'runs'
-        VBP -> 'are'
-        VBZ -> 'is'
-        VBZ -> 'likes'
-        RB -> 'fast'
-        Adj ->'good'
-        Adj -> 'happy'
-        Adj -> 'big'
+    S ->  NP VP 
+    NP -> Det LN | Det NLN | Det LNP
+    VP -> V NP | VBP Adj | VBZ Adj | V RB | V | VBZ NP
+    Det -> 'The'
+    Det -> 'A'
+    Det -> 'the'
+    Det -> 'that'
+    Det -> 'Those'
+    LN -> 'girl' | 'boy' | 'dog' 
+    LNP -> 'boys'
+    NLN -> 'house' | 'crackers'
+    V -> 'eats'
+    V -> 'run' | 'runs'
+    VBP -> 'are'
+    VBZ -> 'is'
+    VBZ -> 'likes'
+    RB -> 'fast'
+    Adj ->'good'
+    Adj -> 'happy'
+    Adj -> 'big'
     """)
-sentence = ['The girl likes the dog.',
-            'A boy likes that house.',
-            'The crackers are good.',
-            'The girl eats.',
-            'The dog runs.',
-            'Those boys run fast.',
-            'The house is big.',
-           'The dog is happy.']
+sentence = [
+    'The girl likes the dog.',
+    'A boy likes that house.',
+    'The crackers are good.',
+    'The girl eats.',
+    'The dog runs.',
+    'Those boys run fast.',
+    'The house is big.',
+    'The dog is happy.'
+    ]
 parser = nltk.ChartParser(grammar)
 n = int(input("Enter the number of sentences you want to parse:- "))
 for i in range(n):
@@ -51,18 +53,3 @@ for i in range(n):
            print()
        else:
            print(t)
-          
-               
-           
-           
-             
-         
-        
-
- 
-    
-
-       
-
-
-       
