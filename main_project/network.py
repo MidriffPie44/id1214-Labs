@@ -6,18 +6,20 @@ import numpy as np
 import random
 import csv
 
-num_of_heroes = 129  # not really but the hero id do not match
+num_heroes = 129  # not really but the hero id do not match
+added_data_points = 2
+input_shape = num_heroes + num_heroes + added_data_points
 
 
 def create_new_seq_model():
     model = Sequential()
     weights = 'random_uniform'
 
-    model.add(layers.Dense(num_of_heroes*2, input_shape=(num_of_heroes+2,), activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(num_of_heroes*4, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(num_of_heroes*4, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(num_of_heroes*4, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(num_of_heroes*4, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(input_shape, input_shape=(input_shape,), activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
 
     model.compile(optimizers.Adam(), loss='mse')
@@ -39,14 +41,26 @@ def create_training_data(amount):
     sample = []
     label = []
     for match in raw_matches:
-        data_point = [0] * (num_of_heroes + 2)
-        for hero in match[1:11]:
-            data_point[int(hero)] += 1
-        data_point[-3] = match[-3]
-        data_point[-2] = match[-2]
-        sample.append(data_point.copy())
+        data_point_win = [0] * input_shape
+        data_point_loss = [0] * input_shape
 
-        label.append(match[-1])
+        for allied_hero in match[1:6]:
+            data_point_win[int(allied_hero)] += 1
+            data_point_loss[int(allied_hero) + num_heroes] += 1
+
+        for enemy_hero in match[6:11]:
+            data_point_win[int(enemy_hero) + num_heroes] += 1
+            data_point_loss[int(enemy_hero)] += 1
+
+        data_point_win[-3] = match[-3]  # duration
+        data_point_win[-2] = match[-2]  # rank
+        data_point_loss[-3] = match[-3]  # duration
+        data_point_loss[-2] = match[-2]  # rank
+
+        sample.append(data_point_win.copy())
+        sample.append(data_point_loss.copy())
+        label.append(match[-1])  # for win
+        label.append(int(not match[-1]))  # for loss
 
     return sample, label
 
@@ -60,15 +74,20 @@ def train_model(model, samples, labels, epochs, batch_size):
 
 
 if __name__ == '__main__':
-    data_samples, data_labels = create_training_data(15000)
+    data_samples, data_labels = create_training_data(10000)
     eval_samples, eval_labels = create_training_data(50)
 
     net = create_new_seq_model()
 
-    train_model(net, data_samples, data_labels, 1000, 100)
+    train_model(net, data_samples, data_labels, 100, 100)
 
     eval_predictions = predict_with_model(net, eval_samples)
     flat_predictions = [int(round(prediction[0])) for prediction in eval_predictions]
+    #flat_predictions = [prediction[0] for prediction in eval_predictions]
+    accurate_predictions = [int(eval_labels[i] == flat_predictions[i]) for i in range(len(eval_labels))]
 
-    print('Predictions:\t', flat_predictions)
+    print('Predictions:', flat_predictions)
     print('Labels:\t\t', eval_labels)
+    print('accuracy:\t', accurate_predictions)
+    print('Accurate predictions:', sum(accurate_predictions))
+    print('Total predictions:', len(eval_labels))
