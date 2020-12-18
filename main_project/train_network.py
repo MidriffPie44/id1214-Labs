@@ -8,8 +8,8 @@ import random
 import csv
 
 num_heroes = 129  # not really but the hero id do not match
-added_data_points = 3
-input_shape = num_heroes + num_heroes + added_data_points
+input_shape = num_heroes + num_heroes + 1  # plus one because 0 is not a hero id
+hidden_shape = input_shape//2
 
 
 def create_new_seq_model():
@@ -17,10 +17,10 @@ def create_new_seq_model():
     weights = 'random_uniform'
 
     model.add(layers.Dense(input_shape, input_shape=(input_shape,), activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(input_shape * 2, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
 
     model.compile(optimizers.Adam(), loss='mse')
@@ -28,12 +28,7 @@ def create_new_seq_model():
     return model
 
 
-def create_training_data(amount, min_medal=0, max_medal=1000, evaluation=False):
-    if evaluation:
-        file = 'evaluation.csv'
-    else:
-        file = 'data.csv'
-
+def create_training_data(amount, min_medal=0, max_medal=1000, file='data.csv'):
     with open(file, newline='') as f:
         reader = csv.reader(f)
         data = []
@@ -43,10 +38,7 @@ def create_training_data(amount, min_medal=0, max_medal=1000, evaluation=False):
             if min_medal <= match[-2] <= max_medal:
                 data.append(match)
 
-    raw_matches = []
-    while len(raw_matches) < amount // 2:
-        random_match_num = random.randint(0, len(data) - 1)
-        raw_matches.append(data[random_match_num])
+    raw_matches = random.sample(data, amount//2)
 
     sample = []
     label = []
@@ -63,12 +55,15 @@ def create_training_data(amount, min_medal=0, max_medal=1000, evaluation=False):
             data_point_radiant[int(enemy_hero) + num_heroes] += 1
             data_point_dire[int(enemy_hero)] += 1
 
-        data_point_radiant[-3] = match[-3]  # duration
-        data_point_radiant[-2] = match[-2]  # rank
-        data_point_radiant[-1] = 1  # team is radiant
-        data_point_dire[-3] = match[-3]  # duration
-        data_point_dire[-2] = match[-2]  # rank
-        data_point_dire[-1] = 0  # team is not radiant
+        data_point_duration = 115  # this is not a hero id so it is used as duration
+        data_point_rank = 116  # this is also not a hero id so is used as rank
+
+        data_point_radiant[data_point_duration] = match[-3]  # duration
+        data_point_radiant[data_point_rank] = match[-2]  # rank
+        data_point_radiant[0] = 1  # team is radiant
+        data_point_dire[data_point_duration] = match[-3]  # duration
+        data_point_dire[data_point_rank] = match[-2]  # rank
+        data_point_dire[0] = 0  # team is not radiant
 
         sample.append(data_point_radiant.copy())
         sample.append(data_point_dire.copy())
@@ -92,8 +87,8 @@ if __name__ == '__main__':
     print('Starting')
     t = time.time()
 
-    data_samples, data_labels, _ = create_training_data(10000, min_medal=0, max_medal=100)
-    eval_samples, eval_labels, match_ids = create_training_data(100, min_medal=0, max_medal=100, evaluation=True)
+    data_samples, data_labels, _ = create_training_data(45000, min_medal=0, max_medal=100, file='data_old_patch.csv')
+    eval_samples, eval_labels, match_ids = create_training_data(1000, min_medal=0, max_medal=100, file='evaluation_old_patch.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
@@ -101,26 +96,36 @@ if __name__ == '__main__':
     print('Creating neural network:', time.time()-t)
     t = time.time()
 
-    train_model(net, data_samples, data_labels, 1000, 1000)
+    train_model(net, data_samples, data_labels, 100, 1000)
     print('Trained model:', time.time()-t)
     t = time.time()
 
     eval_predictions = predict_with_model(net, eval_samples)
     flat_predictions = [int(round(prediction[0])) for prediction in eval_predictions]
-    #flat_predictions = [prediction[0] for prediction in eval_predictions]
     accurate_predictions = [int(eval_labels[i] == flat_predictions[i]) for i in range(len(eval_labels))]
-    eval_correct_predictions = []
-    for i in range(len(eval_predictions)):
-        print(accurate_predictions[i], eval_labels[i], eval_predictions[i][0], match_ids[i])
 
     print('Predictions:', flat_predictions)
     print('Labels:\t\t', eval_labels)
     print('accuracy:\t', accurate_predictions)
     print('Accurate predictions:', sum(accurate_predictions))
     print('Inaccurate predictions:', len(eval_labels)-sum(accurate_predictions))
+    print('Precentage:',sum(accurate_predictions)/len(eval_labels))
     print('Total predictions:', len(eval_labels))
 
     print('sum correct predictions:', sum(abs(x-0.5) * y for x, y in zip(eval_predictions, accurate_predictions))[0])
-    print('sum incorrect predictions:', sum(abs(x-0.5) * int(not y) for x, y in zip(eval_predictions, accurate_predictions))[0])
-
-    net.save('network.net')
+    print(
+        'sum incorrect predictions:',
+        sum(abs(x-0.5) * int(not y) for x, y in zip(eval_predictions, accurate_predictions))[0]
+    )
+    print(1)
+    print(net.layers[0].get_weights()[0])
+    print(2)
+    print(net.layers[0].get_weights()[1])
+    print(3)
+    print(net.layers[1].get_weights()[0])
+    print(4)
+    print(net.layers[1].get_weights()[1])
+    print(5)
+    print(net.layers[2].get_weights()[0])
+    print(6)
+    print(net.layers[2].get_weights()[1])

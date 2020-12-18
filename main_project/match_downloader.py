@@ -3,11 +3,13 @@ import requests
 import json
 import time
 
+file = 'data.csv'
+
 
 def load_data():
     match_ids = []  # stores all match id so that duplicates are avoided
     data = [['match_id', 'r1', 'r2', 'r3', 'r4', 'r5', 'd1', 'd2', 'd3', 'd4', 'd5', 'duration', 'rank', 'r_win']]
-    with open('data.csv') as f:
+    with open(file) as f:
         reader = csv.reader(f)
         for match in list(reader)[1:]:
             match = [int(data_point) for data_point in match]
@@ -52,11 +54,13 @@ def append_data(data, fetched_data, match_ids):
         data_point[11] = match['duration']
         data_point[12] = match['avg_rank_tier']
         data_point[13] = int(match['radiant_win'])
+
         data.append(data_point.copy())
+        match_ids.append(int(match['match_id']))
 
 
 def save_data(data):
-    with open('data.csv', 'w', newline="") as data_file:
+    with open(file, 'w', newline="") as data_file:
         wr = csv.writer(data_file)
         wr.writerows(data)
 

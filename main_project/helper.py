@@ -2,19 +2,27 @@ import csv
 import matplotlib.pyplot as plt
 
 
-with open('data.csv', newline='') as f:
+with open('data_old_patch.csv', newline='') as f:
     reader = csv.reader(f)
-    data = []
+    data_id = []
     for match in list(reader)[1:]:
         match = [int(data_point) for data_point in match]
-        data.append(match)
+        data_id.append(match[0])
 
-aaa = [0]*100
-bbb = range(0,100)
-for datapoint in data:
-    aaa[datapoint[-2]] += 1
 
-print(aaa)
+with open('evaluation_old_patch.csv', newline='') as f:
+    reader = csv.reader(f)
+    eval_id = []
+    for match in list(reader)[1:]:
+        match = [int(data_point) for data_point in match]
+        eval_id.append(match[0])
 
-plt.plot(bbb, aaa)
-plt.show() 
+
+bbb = []
+for i in eval_id:
+    if i in data_id:
+        bbb.append(i)
+        print(eval_id.index(i))
+
+print(len(bbb))
+print(bbb)
