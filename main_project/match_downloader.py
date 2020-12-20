@@ -66,14 +66,18 @@ def save_data(data):
 
 
 try:
+    count = 0
     data, match_ids = load_data()
     print('starting with {0} data points'.format(len(data)))
+    inbetween_time = time.time()
     while 1:
+        count += 1
         start_time = time.time()
         old_data_len = len(data)
         fetched_data = fetch_data()[::-1]
         append_data(data, fetched_data, match_ids)
-        print('Appending new data, Total data points:', len(data), 'New:', len(data)-old_data_len, 'Time:', time.time()-start_time)
+        print(count, 'Appending new data, Total data points:', len(data), 'New:', len(data)-old_data_len, 'Time:', time.time()-inbetween_time)
+        inbetween_time = time.time()
         time.sleep(60)
 
 except Exception as e:

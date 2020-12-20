@@ -21,6 +21,7 @@ def create_new_seq_model():
     model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
 
     model.compile(optimizers.Adam(), loss='mse')
@@ -87,8 +88,8 @@ if __name__ == '__main__':
     print('Starting')
     t = time.time()
 
-    data_samples, data_labels, _ = create_training_data(45000, min_medal=0, max_medal=100, file='data_old_patch.csv')
-    eval_samples, eval_labels, match_ids = create_training_data(1000, min_medal=0, max_medal=100, file='evaluation_old_patch.csv')
+    data_samples, data_labels, match_ids = create_training_data(37000*2, min_medal=0, max_medal=100, file='data.csv')
+    eval_samples, eval_labels, match_ids = create_training_data(1000, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
@@ -96,12 +97,13 @@ if __name__ == '__main__':
     print('Creating neural network:', time.time()-t)
     t = time.time()
 
-    train_model(net, data_samples, data_labels, 100, 1000)
+    train_model(net, data_samples, data_labels, 100, 100)
     print('Trained model:', time.time()-t)
     t = time.time()
 
     eval_predictions = predict_with_model(net, eval_samples)
-    flat_predictions = [int(round(prediction[0])) for prediction in eval_predictions]
+    flat_raw_predictions = [prediction[0] for prediction in eval_predictions]
+    flat_predictions = [int(round(prediction)) for prediction in flat_raw_predictions]
     accurate_predictions = [int(eval_labels[i] == flat_predictions[i]) for i in range(len(eval_labels))]
 
     print('Predictions:', flat_predictions)
@@ -109,23 +111,18 @@ if __name__ == '__main__':
     print('accuracy:\t', accurate_predictions)
     print('Accurate predictions:', sum(accurate_predictions))
     print('Inaccurate predictions:', len(eval_labels)-sum(accurate_predictions))
-    print('Precentage:',sum(accurate_predictions)/len(eval_labels))
+    print('Percentage:', sum(accurate_predictions)/len(eval_labels) * 100)
     print('Total predictions:', len(eval_labels))
+    """
+    for i in range(1000):
+        if flat_raw_predictions[i] > 0.9 or flat_raw_predictions[i] < 0.1:
+            print(match_ids[i], accurate_predictions[i], eval_labels[i], flat_raw_predictions[i])
 
-    print('sum correct predictions:', sum(abs(x-0.5) * y for x, y in zip(eval_predictions, accurate_predictions))[0])
-    print(
-        'sum incorrect predictions:',
-        sum(abs(x-0.5) * int(not y) for x, y in zip(eval_predictions, accurate_predictions))[0]
-    )
-    print(1)
-    print(net.layers[0].get_weights()[0])
-    print(2)
-    print(net.layers[0].get_weights()[1])
-    print(3)
-    print(net.layers[1].get_weights()[0])
-    print(4)
-    print(net.layers[1].get_weights()[1])
-    print(5)
-    print(net.layers[2].get_weights()[0])
-    print(6)
-    print(net.layers[2].get_weights()[1])
+    max_index = flat_raw_predictions.index(max(flat_raw_predictions))
+    min_index = flat_raw_predictions.index(min(flat_raw_predictions))
+
+    print(match_ids[max_index], accurate_predictions[max_index], eval_labels[max_index], flat_raw_predictions[max_index])
+    print(match_ids[min_index], accurate_predictions[min_index], eval_labels[min_index], flat_raw_predictions[min_index])
+    
+    rad_advantage = [data_labels[i] == data_samples[i][0] for i in range(50000)]
+    print(sum(rad_advantage))"""
