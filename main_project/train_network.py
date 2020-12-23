@@ -88,8 +88,8 @@ if __name__ == '__main__':
     print('Starting')
     t = time.time()
 
-    data_samples, data_labels, match_ids = create_training_data(37000*2, min_medal=0, max_medal=100, file='data.csv')
-    eval_samples, eval_labels, match_ids = create_training_data(1000, min_medal=0, max_medal=100, file='evaluation.csv')
+    data_samples, data_labels, match_ids = create_training_data(100000*2, min_medal=0, max_medal=100, file='data.csv')
+    eval_samples, eval_labels, match_ids = create_training_data(10000*2, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     print('Creating neural network:', time.time()-t)
     t = time.time()
 
-    train_model(net, data_samples, data_labels, 100, 100)
+    train_model(net, data_samples, data_labels, 100, 2000)
     print('Trained model:', time.time()-t)
     t = time.time()
 
