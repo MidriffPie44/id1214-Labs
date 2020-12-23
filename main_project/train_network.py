@@ -113,7 +113,7 @@ if __name__ == '__main__':
     print('Inaccurate predictions:', len(eval_labels)-sum(accurate_predictions))
     print('Percentage:', sum(accurate_predictions)/len(eval_labels) * 100)
     print('Total predictions:', len(eval_labels))
-    """
+
     for i in range(1000):
         if flat_raw_predictions[i] > 0.9 or flat_raw_predictions[i] < 0.1:
             print(match_ids[i], accurate_predictions[i], eval_labels[i], flat_raw_predictions[i])
@@ -125,4 +125,4 @@ if __name__ == '__main__':
     print(match_ids[min_index], accurate_predictions[min_index], eval_labels[min_index], flat_raw_predictions[min_index])
     
     rad_advantage = [data_labels[i] == data_samples[i][0] for i in range(50000)]
-    print(sum(rad_advantage))"""
+    print(sum(rad_advantage))
