@@ -78,20 +78,20 @@ def create_training_data(amount, min_medal=0, max_medal=1000, file='data.csv'):
     return sample, label, match_id
 
 
-def predict_with_model(model, samples):
-    return model.predict(np.array(samples))
-
-
 def train_model(model, samples, labels, epochs, batch_size):
     model.fit(np.array(samples), np.array(labels), epochs=epochs, batch_size=batch_size)
+
+
+def predict_with_model(model, samples):
+    return model.predict(np.array(samples))
 
 
 if __name__ == '__main__':
     print('Starting')
     t = time.time()
 
-    data_samples, data_labels, match_ids = create_training_data(150*2, min_medal=0, max_medal=100, file='data.csv')
-    eval_samples, eval_labels, match_ids = create_training_data(20000*2, min_medal=0, max_medal=100, file='evaluation.csv')
+    data_samples, data_labels, match_ids = create_training_data(10, min_medal=0, max_medal=100, file='data.csv')
+    eval_samples, eval_labels, match_ids = create_training_data(50*2, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
@@ -103,9 +103,9 @@ if __name__ == '__main__':
     print('Trained model:', time.time()-t)
     t = time.time()
 
-    eval_predictions = predict_with_model(net, eval_samples)
-    flat_raw_predictions = [prediction[0] for prediction in eval_predictions]
-    flat_predictions = [int(round(prediction)) for prediction in flat_raw_predictions]
+    raw_eval_prediction = predict_with_model(net, eval_samples)
+    flat_eval_predictions = [prediction[0] for prediction in raw_eval_prediction]
+    flat_predictions = [int(round(prediction)) for prediction in flat_eval_predictions]
     accurate_predictions = [int(eval_labels[i] == flat_predictions[i]) for i in range(len(eval_labels))]
 
     print('Predictions:', flat_predictions[:100])
@@ -116,32 +116,7 @@ if __name__ == '__main__':
     print('Total predictions:', len(eval_labels))
     print('Percentage:', sum(accurate_predictions)/len(eval_labels) * 100)
 
-    max_index = flat_raw_predictions.index(max(flat_raw_predictions))
-    min_index = flat_raw_predictions.index(min(flat_raw_predictions))
-
-    print('max prediction:', match_ids[max_index], accurate_predictions[max_index], eval_labels[max_index], flat_raw_predictions[max_index])
-    print('min prediction:', match_ids[min_index], accurate_predictions[min_index], eval_labels[min_index], flat_raw_predictions[min_index])
     
-    rad_advantage = [data_labels[i] == data_samples[i][0] for i in range(len(data_samples))]
-    print('radiant advantage:', sum(rad_advantage)/len(rad_advantage) * 100)
-
-    x_set, y_set = data_plot.generate_plot_data(eval_samples, eval_labels, flat_predictions, 116, list(range(100)))
-    data_plot.plot_accuracy(x_set, y_set, 'medal', 'accuracy')
-
-    x_set, y_set = data_plot.duration_data(eval_samples, eval_labels, flat_predictions, 115, list(range(15, 120)))
-    data_plot.plot_accuracy(x_set, y_set, 'match duration', 'accuracy')
-
-    x_set, y_set = data_plot.generate_plot_data(eval_samples, eval_labels, flat_predictions, 0, list(range(2)))
-    data_plot.plot_accuracy(x_set, y_set, 'radiant', 'accuracy')
-
-    percentage_prediction = [[int(round(prediction*100))] for prediction in flat_raw_predictions]
-    x_set, y_set = data_plot.generate_plot_data(percentage_prediction, eval_labels, flat_predictions, 0, list(range(120)))
-    data_plot.plot_accuracy(x_set, y_set, 'prediction', 'accuracy')
-
-    prediction_deviation = [[abs(prediction[0]-50)] for prediction in percentage_prediction]
-    x_set, y_set = data_plot.generate_plot_data(prediction_deviation, eval_labels, flat_predictions, 0,
-                                                list(range(120)))
-    data_plot.plot_accuracy(x_set, y_set, 'deviation', 'accuracy')
 
 
 
