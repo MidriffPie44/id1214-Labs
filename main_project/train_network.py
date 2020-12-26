@@ -22,8 +22,8 @@ def create_new_seq_model():
     model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
 
     model.compile(optimizers.Adam(), loss='mse')
@@ -90,8 +90,8 @@ if __name__ == '__main__':
     print('Starting')
     t = time.time()
 
-    data_samples, data_labels, match_ids = create_training_data(160000*2, min_medal=0, max_medal=100, file='data.csv')
-    eval_samples, eval_labels, match_ids = create_training_data(5000*2, min_medal=0, max_medal=100, file='evaluation.csv')
+    data_samples, data_labels, match_ids = create_training_data(150000*2, min_medal=0, max_medal=100, file='data.csv')
+    eval_samples, eval_labels, match_ids = create_training_data(20000*2, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     print('Creating neural network:', time.time()-t)
     t = time.time()
 
-    train_model(net, data_samples, data_labels, 100, 2000)
+    train_model(net, data_samples, data_labels, 1000, 100)
     print('Trained model:', time.time()-t)
     t = time.time()
 
@@ -134,8 +134,14 @@ if __name__ == '__main__':
     x_set, y_set = data_plot.generate_plot_data(eval_samples, eval_labels, flat_predictions, 0, list(range(2)))
     data_plot.plot_accuracy(x_set, y_set, 'radiant', 'accuracy')
 
-    x_set, y_set = data_plot.generate_plot_data(eval_samples, eval_labels, flat_predictions, 0, list(range(2)))
-    data_plot.plot_accuracy(x_set, y_set, 'radiant', 'accuracy')
+    percentage_prediction = [[int(round(prediction*100))] for prediction in flat_raw_predictions]
+    x_set, y_set = data_plot.generate_plot_data(percentage_prediction, eval_labels, flat_predictions, 0, list(range(120)))
+    data_plot.plot_accuracy(x_set, y_set, 'prediction', 'accuracy')
+
+    prediction_deviation = [[abs(prediction[0]-50)] for prediction in percentage_prediction]
+    x_set, y_set = data_plot.generate_plot_data(prediction_deviation, eval_labels, flat_predictions, 0,
+                                                list(range(120)))
+    data_plot.plot_accuracy(x_set, y_set, 'deviation', 'accuracy')
 
 
 
