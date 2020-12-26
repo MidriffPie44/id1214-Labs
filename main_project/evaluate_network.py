@@ -29,7 +29,7 @@ if __name__ == '__main__':
     print('Generating training data:', time.time() - t)
     t = time.time()
 
-    net = models.load_model()
+    net = models.load_model('net_26_12')
     print('Loaded neural network:', time.time() - t)
     t = time.time()
 
@@ -52,22 +52,22 @@ if __name__ == '__main__':
     print('max prediction:', match_ids[max_index], accurate_predictions[max_index], flat_raw_predictions[max_index])
     print('min prediction:', match_ids[min_index], accurate_predictions[min_index], flat_raw_predictions[min_index])
 
-    rad_advantage = [eval_labels[i] == eval_labels[i][0] for i in range(len(eval_labels))]
+    rad_advantage = [eval_labels[i] == eval_samples[i][0] for i in range(len(eval_labels))]
     print('radiant advantage:', sum(rad_advantage) / len(rad_advantage) * 100)
 
-    x_set, y_set = data(eval_samples, eval_labels, flat_predictions, 116, range(0, 100, 4), 2)
-    plot(x_set, y_set, 'medal', 'accuracy')
+    x_set, y_set, volume = data(eval_samples, eval_labels, flat_predictions, 116, range(0, 100, 4), 2)
+    plot(x_set, y_set, volume, 'medal', 'accuracy')
 
-    x_set, y_set = data(eval_samples, eval_labels, flat_predictions, 115, range(15*60, 60*60, 90), 45)
-    plot(x_set, y_set, 'match duration, seconds', 'accuracy')
+    x_set, y_set, volume = data(eval_samples, eval_labels, flat_predictions, 115, range(15*60, 60*60, 3*60), 3*30)
+    plot(x_set, y_set, volume, 'match duration, seconds', 'accuracy')
 
-    x_set, y_set = data(eval_samples, eval_labels, flat_predictions, 0, range(2))
-    plot(x_set, y_set, 'radiant', 'accuracy')
+    x_set, y_set, volume = data(eval_samples, eval_labels, flat_predictions, 0, range(2))
+    plot(x_set, y_set, volume, 'radiant', 'accuracy')
 
     percentage_prediction = [[int(round(prediction * 100))] for prediction in flat_raw_predictions]
-    x_set, y_set = data(percentage_prediction, eval_labels, flat_predictions, 0, range(-50, 150, 6), 3)
-    plot(x_set, y_set, 'prediction', 'accuracy')
+    x_set, y_set, volume = data(percentage_prediction, eval_labels, flat_predictions, 0, range(-50, 150, 5), 2.5)
+    plot(x_set, y_set, volume, 'prediction', 'accuracy')
 
     prediction_deviation = [[abs(prediction[0] - 50)] for prediction in percentage_prediction]
-    x_set, y_set = data(prediction_deviation, eval_labels, flat_predictions, 0, range(0, 150, 6), 3)
-    plot(x_set, y_set, 'deviation', 'accuracy')
+    x_set, y_set, volume = data(prediction_deviation, eval_labels, flat_predictions, 0, range(0, 150, 5), 2.5)
+    plot(x_set, y_set, volume, 'deviation', 'accuracy')
