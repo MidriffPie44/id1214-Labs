@@ -78,7 +78,7 @@ try:
         append_data(data, fetched_data, match_ids)
         print(count, 'Appending new data, Total data points:', len(data), 'New:', len(data)-old_data_len, 'Time:', time.time()-inbetween_time)
         inbetween_time = time.time()
-        time.sleep(60)
+        time.sleep(90)
 
 except Exception as e:
     print("caught error", e)
