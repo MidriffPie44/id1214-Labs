@@ -82,12 +82,14 @@ try:
         fetched_data = fetch_data(max_id)[::-1]
         max_id = int(fetched_data[0]['match_id'])
         append_data(data, fetched_data, match_ids)
+        if count % 100 == 0:
+            save_data(data)
         new_data = len(data)-old_data_len
         current_time = time.strftime("%H:%M")
         time_taken = time.time()-inbetween_time
         print(current_time, max_id, count, 'Total data:', len(data), 'New:', new_data, 'Time:', time_taken)
         inbetween_time = time.time()
-        time.sleep(1)
+        time.sleep(0.2)
 
 except Exception as e:
     save_data(data)
