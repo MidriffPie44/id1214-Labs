@@ -19,8 +19,12 @@ def load_data():
     return data, match_ids
 
 
-def fetch_data():
-    r = requests.get(" https://api.opendota.com/api/publicMatches")
+def fetch_data(max_id=0):
+    if max_id != 0:
+        less_than = '?less_than_match_id={0}'.format(max_id)
+    else:
+        less_than = ''
+    r = requests.get("https://api.opendota.com/api/publicMatches"+less_than)
     fetched_data = r.json()
     return fetched_data
 
@@ -70,23 +74,30 @@ try:
     data, match_ids = load_data()
     print('starting with {0} data points'.format(len(data)))
     inbetween_time = time.time()
+    max_id = data[-1][0]
     while 1:
         count += 1
         start_time = time.time()
         old_data_len = len(data)
-        fetched_data = fetch_data()[::-1]
+        fetched_data = fetch_data(max_id)[::-1]
+        max_id = int(fetched_data[0]['match_id'])
         append_data(data, fetched_data, match_ids)
-        print(count, 'Appending new data, Total data points:', len(data), 'New:', len(data)-old_data_len, 'Time:', time.time()-inbetween_time)
+        new_data = len(data)-old_data_len
+        current_time = time.strftime("%H:%M")
+        time_taken = time.time()-inbetween_time
+        print(current_time, max_id, count, 'Total data:', len(data), 'New:', new_data, 'Time:', time_taken)
         inbetween_time = time.time()
-        time.sleep(90)
+        time.sleep(1)
 
 except Exception as e:
-    print("caught error", e)
-    print('saved with number of data points', len(data))
     save_data(data)
+    print("caught error", e)
+    current_time = time.strftime("%H:%M")
+    print(current_time, 'saved with number of data points', len(data))
 
 except KeyboardInterrupt:
     save_data(data)
     print("Keyboard Interrupt")
-    print('saved with {0} data points'.format(len(data)))
+    current_time = time.strftime("%H:%M")
+    print(current_time, 'saved with {0} data points'.format(len(data)))
 
