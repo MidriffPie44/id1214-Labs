@@ -24,13 +24,13 @@ def predict_with_model(model, samples):
 if __name__ == '__main__':
     print('Starting')
     t = time.time()
-
-    eval_samples, eval_labels, match_ids = train_network.create_training_data(123000 * 2, file='evaluation.csv')
-    print('Generating training data:', time.time() - t)
+    net_name = input('Enter name of network:')
+    net = models.load_model(net_name)
+    print('Loaded neural network:', time.time() - t)
     t = time.time()
 
-    net = models.load_model('29_12')
-    print('Loaded neural network:', time.time() - t)
+    eval_samples, eval_labels, match_ids = train_network.create_training_data(123000 * 2, file='evaluation.csv')
+    print('Generating evaluation data:', time.time() - t)
     t = time.time()
 
     raw_prediction = predict_with_model(net, eval_samples)

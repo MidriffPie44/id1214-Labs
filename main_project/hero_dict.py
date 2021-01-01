@@ -1,4 +1,4 @@
-hero = {
+heroID_to_name = {
     1: "antimage",
     2: "axe",
     3: "bane",
@@ -113,7 +113,7 @@ hero = {
     113: "arc_warden",
     114: "monkey_king",
     119: "dark_willow",
-    120: "pangolier"
+    120: "pangolier",
     121: "grimstroke",
     123: "hoodwink",
     126: "void_spirit",
