@@ -74,7 +74,7 @@ try:
     data, match_ids = load_data()
     print('starting with {0} data points'.format(len(data)))
     inbetween_time = time.time()
-    max_id = 0
+    max_id = 5765488511
     while 1:
         count += 1
         start_time = time.time()
@@ -89,7 +89,7 @@ try:
         time_taken = time.time()-inbetween_time
         print(current_time, max_id, count, 'Total data:', len(data), 'New:', new_data, 'Time:', time_taken)
         inbetween_time = time.time()
-        time.sleep(10)
+        time.sleep(1)
 
 except Exception as e:
     save_data(data)
