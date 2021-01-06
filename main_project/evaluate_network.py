@@ -29,7 +29,7 @@ if __name__ == '__main__':
     print('Loaded neural network:', time.time() - t)
     t = time.time()
 
-    eval_samples, eval_labels, match_ids = train_network.create_training_data(123000 * 2, file='evaluation.csv')
+    eval_samples, eval_labels, match_ids = train_network.create_training_data(110000 * 2, file='evaluation.csv')
     print('Generating evaluation data:', time.time() - t)
     t = time.time()
 

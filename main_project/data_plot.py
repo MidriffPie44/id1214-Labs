@@ -9,7 +9,7 @@ def generate_plot_data(data_set, data_labels, data_predictions, index, index_val
         accuracy = 0
         data_amount = 0
         for data_index in range(len(data_set)):
-            if data_set[data_index][index] < value - deviation or data_set[data_index][index] > value + deviation:
+            if data_set[data_index][index] < value - deviation or data_set[data_index][index] > value:
                 continue
             data_amount += 1
             accuracy += data_labels[data_index] == data_predictions[data_index]

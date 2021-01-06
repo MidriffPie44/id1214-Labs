@@ -19,10 +19,10 @@ def create_new_seq_model():
     weights = 'random_uniform'
 
     model.add(layers.Dense(input_shape, input_shape=(input_shape,), activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
 
@@ -90,7 +90,7 @@ if __name__ == '__main__':
     print('Starting')
     t = time.time()
 
-    data_samples, data_labels, match_ids = create_training_data(1100000*2, min_medal=0, max_medal=100, file='data.csv')
+    data_samples, data_labels, match_ids = create_training_data(1500000*2, min_medal=0, max_medal=100, file='data.csv')
     eval_samples, eval_labels, match_ids = create_training_data(10000, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     print('Creating neural network:', time.time()-t)
     t = time.time()
 
-    train_model(net, data_samples, data_labels, 200, 1000)
+    train_model(net, data_samples, data_labels, 250, 1000)
     print('Trained model:', time.time()-t)
     t = time.time()
 
@@ -108,7 +108,7 @@ if __name__ == '__main__':
     flat_predictions = [int(round(prediction)) for prediction in flat_eval_predictions]
     accurate_predictions = [int(eval_labels[i] == flat_predictions[i]) for i in range(len(eval_labels))]
 
-    print('Predictions:', flat_predictions[:50])
+    print('Predictions:\t', flat_predictions[:50])
     print('Labels:\t\t', eval_labels[:50])
     print('accuracy:\t', accurate_predictions[:50])
     print('Accurate predictions:', sum(accurate_predictions))
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     print('Total predictions:', len(eval_labels))
     print('Percentage:', sum(accurate_predictions)/len(eval_labels) * 100)
 
-    net.save('29_12')
+    net.save('05_01_0l')
 
     
 
