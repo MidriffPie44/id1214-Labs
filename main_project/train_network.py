@@ -11,7 +11,7 @@ import data_plot
 
 num_heroes = 129  # not really but the hero id do not match
 input_shape = num_heroes + num_heroes + 1  # plus one because 0 is not a hero id
-hidden_shape = input_shape//2
+hidden_shape = input_shape//3 * 2
 
 
 def create_new_seq_model():
@@ -19,9 +19,9 @@ def create_new_seq_model():
     weights = 'random_uniform'
 
     model.add(layers.Dense(input_shape, input_shape=(input_shape,), activation='relu', kernel_initializer=weights))
-    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     print('Total predictions:', len(eval_labels))
     print('Percentage:', sum(accurate_predictions)/len(eval_labels) * 100)
 
-    net.save('05_01_0l')
+    net.save('05_01_X')
 
     
 
