@@ -1,6 +1,17 @@
 import csv
 import matplotlib.pyplot as plt
 
+import data_plot
+
+layers = []
+
+y = [57.45, 60.14, 60.14, 61.22, 60.44, 60.44]
+x = [0,1,2,3,4,5]
+
+data_plot.plot_accuracy(x, y, x_label='Number of hidden layers', y_label='Model Accuracy')
+
+quit()
+
 
 with open('data.csv', newline='') as f:
     reader = csv.reader(f)
