@@ -21,15 +21,32 @@ def predict_with_model(model, samples):
     return model.predict(np.array(samples))
 
 
+def sample_accuracy(predictions, labels, index_list):
+    accuracy = 0
+    for index in index_list:
+        accuracy += int(predictions[index] == labels[index])
+    return 100*accuracy/len(index_list)
+
+
+def get_samples(data, index, max_value, min_value):
+    index_of_samples = []
+    for i in range(len(data)):
+        if data[i][index] > max_value or data[i][index] < min_value:
+            continue
+        index_of_samples.append(i)
+
+    return index_of_samples
+
+
 if __name__ == '__main__':
     print('Starting')
     t = time.time()
-    net_name = input('Enter name of network:')
+    net_name = '01_01' #input('Enter name of network:')
     net = models.load_model(net_name)
     print('Loaded neural network:', time.time() - t)
     t = time.time()
 
-    eval_samples, eval_labels, match_ids = train_network.create_training_data(110000 * 2, file='evaluation.csv')
+    eval_samples, eval_labels, match_ids = train_network.create_training_data(190000 * 2, file='evaluation.csv')
     print('Generating evaluation data:', time.time() - t)
     t = time.time()
 
@@ -37,6 +54,8 @@ if __name__ == '__main__':
     flat_raw_predictions = [prediction[0] for prediction in raw_prediction]
     flat_predictions = [1 if prediction > 0.5 else 0 for prediction in flat_raw_predictions]
     accurate_predictions = [int(eval_labels[i] == flat_predictions[i]) for i in range(len(eval_labels))]
+    print('Make predictions:', time.time() - t)
+    t = time.time()
 
     print('Predictions:', flat_predictions[:50])
     print('Labels:\t\t', eval_labels[:50])
@@ -55,19 +74,78 @@ if __name__ == '__main__':
     rad_advantage = [eval_labels[i] == eval_samples[i][0] for i in range(len(eval_labels))]
     print('radiant advantage:', sum(rad_advantage) / len(rad_advantage) * 100)
 
-    x_set, y_set, volume = data(eval_samples, eval_labels, flat_predictions, 116, range(12, 100, 5), 10)
-    plot(x_set, y_set, volume, 'medal', 'accuracy')
+    x_set = []
+    y_set = []
+    volume = []
+    format_predictions = [[abs(prediction - 0.5)] for prediction in flat_raw_predictions]
 
-    x_set, y_set, volume = data(eval_samples, eval_labels, flat_predictions, 115, range(15*60, 4000, 5*60), 5*60)
-    plot(x_set, y_set, volume, 'match duration, seconds', 'accuracy')
+    for i in range(10):
+        print(i/20, len(get_samples(format_predictions, 0, max_value=100, min_value=i/20))/len(format_predictions))
 
-    x_set, y_set, volume = data(eval_samples, eval_labels, flat_predictions, 0, range(2))
-    plot(x_set, y_set, volume, 'radiant', 'accuracy')
+    for i in range(1, 70):
+        match_id = get_samples(format_predictions, 0, max_value=(i + 0.5) / 100, min_value=(i - 0.5) / 100)
+        if len(match_id) < 10:
+            continue
 
-    percentage_prediction = [[int(round(prediction * 100))] for prediction in flat_raw_predictions]
-    x_set, y_set, volume = data(percentage_prediction, eval_labels, flat_predictions, 0, range(-50, 150, 1), 1)
-    plot(x_set, y_set, volume, 'prediction', 'accuracy')
+        y_set.append(sample_accuracy(flat_predictions, eval_labels, match_id))
+        x_set.append(i / 100)
+        volume.append(len(match_id))
 
-    prediction_deviation = [[abs(prediction[0] - 50)] for prediction in percentage_prediction]
-    x_set, y_set, volume = data(prediction_deviation, eval_labels, flat_predictions, 0, range(0, 150, 1), 1)
-    plot(x_set, y_set, volume, 'deviation', 'accuracy')
+    print('Plot predictions accuracy 2', time.time() - t)
+    plot(x_set, y_set, volume, 'Absolute prediction deviation from 0.5', 'Model accuracy (%)',
+         'Model accuracy in relation to model prediction deviation from expected value')
+    t = time.time()
+
+    x_set = []
+    y_set = []
+    volume = []
+    format_predictions = [[prediction] for prediction in flat_raw_predictions]
+    for i in range(1, 100):
+        match_id = get_samples(format_predictions, 0, max_value=(i+1)/100, min_value=(i-1)/100)
+        if len(match_id) == 0:
+            continue
+
+        y_set.append(sample_accuracy(flat_predictions, eval_labels, match_id))
+        x_set.append(i/100)
+        volume.append(len(match_id))
+
+
+    print('Plot predictions accuracy', time.time() - t)
+    plot(x_set, y_set, volume, 'Prediction value', 'Model accuracy (%)',
+         'Model accuracy in relation to model prediction')
+    t = time.time()
+
+    x_set = []
+    y_set = []
+    volume = []
+    for i in range(23, 80, 1):
+        match_id = get_samples(eval_samples, 115, max_value=(i+5)*60, min_value=(i-5)*60)
+        if len(match_id) == 0:
+            continue
+
+        y_set.append(sample_accuracy(flat_predictions, eval_labels, match_id))
+        x_set.append(i)
+        volume.append(len(match_id))
+    print('Plot time', time.time() - t)
+    plot(x_set, y_set, volume, 'Match duration (minutes)', 'Model accuracy (%)',
+         'Model accuracy in relation to match duration')
+    t = time.time()
+
+
+    x_set = []
+    y_set = []
+    volume = []
+    for i in range(16, 100, 1):
+        match_id = get_samples(eval_samples, 116, max_value=i, min_value=i)
+        if len(match_id) == 0:
+            continue
+
+        y_set.append(sample_accuracy(flat_predictions, eval_labels, match_id))
+        x_set.append(i)
+        volume.append(len(match_id))
+
+    print('Plot rank', time.time() - t)
+    plot(x_set, y_set, volume, 'Average team rank', 'Model accuracy (%)', 'Model accuracy in relation to match rank')
+    t = time.time()
+
+    quit()
