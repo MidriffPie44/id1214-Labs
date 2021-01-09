@@ -1,20 +1,25 @@
-import keras.layers as layers
-import keras.optimizers as optimizers
 import keras.models as models
-from keras import Sequential
 import numpy as np
 
+import matplotlib.pyplot as plt
 import time
-import random
-import csv
 
-from data_plot import generate_plot_data as data
-from data_plot import plot_accuracy as plot
 import train_network
+
 
 num_heroes = 129  # not really but the hero id do not match
 input_shape = num_heroes + num_heroes + 1  # plus one because 0 is not a hero id
 hidden_shape = input_shape//2
+
+
+def get_samples(data, index, max_value, min_value):
+    index_of_samples = []
+    for i in range(len(data)):
+        if data[i][index] > max_value or data[i][index] < min_value:
+            continue
+        index_of_samples.append(i)
+
+    return index_of_samples
 
 
 def predict_with_model(model, samples):
@@ -28,20 +33,25 @@ def sample_accuracy(predictions, labels, index_list):
     return 100*accuracy/len(index_list)
 
 
-def get_samples(data, index, max_value, min_value):
-    index_of_samples = []
-    for i in range(len(data)):
-        if data[i][index] > max_value or data[i][index] < min_value:
-            continue
-        index_of_samples.append(i)
+def plot_accuracy(set_x, set_y, volume=[], x_label='x', y_label='y', title='Tile'):
+    plt.plot(set_x, set_y)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.title(title)
+    plt.show()
 
-    return index_of_samples
+    if volume:
+        plt.plot(set_x, volume)
+        plt.xlabel(x_label)
+        plt.ylabel('Volume')
+        plt.title(x_label + ' volume (number of matches)')
+        plt.show()
 
 
 if __name__ == '__main__':
     print('Starting')
     t = time.time()
-    net_name = '01_01' #input('Enter name of network:')
+    net_name = input('Enter name of network:')
     net = models.load_model(net_name)
     print('Loaded neural network:', time.time() - t)
     t = time.time()
@@ -67,12 +77,8 @@ if __name__ == '__main__':
 
     max_index = flat_raw_predictions.index(max(flat_raw_predictions))
     min_index = flat_raw_predictions.index(min(flat_raw_predictions))
-
-    print('max prediction:', match_ids[max_index], accurate_predictions[max_index], flat_raw_predictions[max_index])
-    print('min prediction:', match_ids[min_index], accurate_predictions[min_index], flat_raw_predictions[min_index])
-
-    rad_advantage = [eval_labels[i] == eval_samples[i][0] for i in range(len(eval_labels))]
-    print('radiant advantage:', sum(rad_advantage) / len(rad_advantage) * 100)
+    print('Highest rated match:', match_ids[max_index], accurate_predictions[max_index], flat_raw_predictions[max_index])
+    print('Lowest rated match:', match_ids[min_index], accurate_predictions[min_index], flat_raw_predictions[min_index])
 
     x_set = []
     y_set = []
@@ -92,8 +98,8 @@ if __name__ == '__main__':
         volume.append(len(match_id))
 
     print('Plot predictions accuracy 2', time.time() - t)
-    plot(x_set, y_set, volume, 'Absolute prediction deviation from 0.5', 'Model accuracy (%)',
-         'Model accuracy in relation to model prediction deviation from expected value')
+    plot_accuracy(x_set, y_set, volume, 'Absolute prediction deviation from 0.5', 'Model accuracy (%)',
+                  'Model accuracy in relation to model prediction deviation from expected value')
     t = time.time()
 
     x_set = []
@@ -109,10 +115,9 @@ if __name__ == '__main__':
         x_set.append(i/100)
         volume.append(len(match_id))
 
-
     print('Plot predictions accuracy', time.time() - t)
-    plot(x_set, y_set, volume, 'Prediction value', 'Model accuracy (%)',
-         'Model accuracy in relation to model prediction')
+    plot_accuracy(x_set, y_set, volume, 'Prediction value', 'Model accuracy (%)',
+                  'Model accuracy in relation to model prediction')
     t = time.time()
 
     x_set = []
@@ -127,10 +132,9 @@ if __name__ == '__main__':
         x_set.append(i)
         volume.append(len(match_id))
     print('Plot time', time.time() - t)
-    plot(x_set, y_set, volume, 'Match duration (minutes)', 'Model accuracy (%)',
-         'Model accuracy in relation to match duration')
+    plot_accuracy(x_set, y_set, volume, 'Match duration (minutes)', 'Model accuracy (%)',
+                  'Model accuracy in relation to match duration')
     t = time.time()
-
 
     x_set = []
     y_set = []
@@ -145,7 +149,6 @@ if __name__ == '__main__':
         volume.append(len(match_id))
 
     print('Plot rank', time.time() - t)
-    plot(x_set, y_set, volume, 'Average team rank', 'Model accuracy (%)', 'Model accuracy in relation to match rank')
+    plot_accuracy(x_set, y_set, volume, 'Average team rank', 'Model accuracy (%)',
+                  'Model accuracy in relation to match rank')
     t = time.time()
-
-    quit()

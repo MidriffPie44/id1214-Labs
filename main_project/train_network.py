@@ -7,7 +7,6 @@ import time
 import random
 import csv
 
-import data_plot
 
 num_heroes = 129  # not really but the hero id do not match
 input_shape = num_heroes + num_heroes + 1  # plus one because 0 is not a hero id
@@ -19,11 +18,9 @@ def create_new_seq_model():
     weights = 'random_uniform'
 
     model.add(layers.Dense(input_shape, input_shape=(input_shape,), activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
-    #model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))  # 3 hidden layers was tested
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))  # to be the best number of
+    model.add(layers.Dense(hidden_shape, activation='relu', kernel_initializer=weights))  # layers
     model.add(layers.Dense(1, activation='linear', kernel_initializer=weights))
 
     model.compile(optimizers.Adam(), loss='mse')
@@ -32,7 +29,7 @@ def create_new_seq_model():
 
 
 def create_training_data(amount, min_medal=0, max_medal=1000, file='data.csv'):
-    with open(file, newline='') as f:
+    with open(file, newline='') as f:  # reads all the data from the file
         reader = csv.reader(f)
         data = []
         for match in list(reader)[1:]:
@@ -41,14 +38,14 @@ def create_training_data(amount, min_medal=0, max_medal=1000, file='data.csv'):
             if min_medal <= match[-2] <= max_medal:
                 data.append(match)
 
-    raw_matches = random.sample(data, amount//2)
+    raw_matches = random.sample(data, amount//2)  # pick a specified number of matches randomly from the full data list
 
     sample = []
     label = []
     match_id = []
     for match in raw_matches:
-        data_point_radiant = [0] * input_shape
-        data_point_dire = [0] * input_shape
+        data_point_radiant = [0] * input_shape  # Each match is processed twice, once from the perspective of the losing
+        data_point_dire = [0] * input_shape     # and once from the perspective of the winning team.
 
         for allied_hero in match[1:6]:
             data_point_radiant[int(allied_hero)] += 1
@@ -87,11 +84,15 @@ def predict_with_model(model, samples):
 
 
 if __name__ == '__main__':
-    print('Starting')
+    model_name = ''
+    while not model_name:
+        model_name = input('Enter name of new model:')
+
     t = time.time()
 
+    print('Starting')
     data_samples, data_labels, match_ids = create_training_data(1500000*2, min_medal=0, max_medal=100, file='data.csv')
-    eval_samples, eval_labels, match_ids = create_training_data(10000, min_medal=0, max_medal=100, file='evaluation.csv')
+    eval_samples, eval_labels, _ = create_training_data(10000, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
@@ -101,6 +102,10 @@ if __name__ == '__main__':
 
     train_model(net, data_samples, data_labels, 250, 1000)
     print('Trained model:', time.time()-t)
+    t = time.time()
+
+    net.save(model_name)
+    print('Saved model:', time.time() - t)
     t = time.time()
 
     raw_eval_prediction = predict_with_model(net, eval_samples)
@@ -115,11 +120,3 @@ if __name__ == '__main__':
     print('Inaccurate predictions:', len(eval_labels)-sum(accurate_predictions))
     print('Total predictions:', len(eval_labels))
     print('Percentage:', sum(accurate_predictions)/len(eval_labels) * 100)
-
-    net.save('05_01_X')
-
-    
-
-
-
-
