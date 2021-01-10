@@ -61,18 +61,18 @@ def print_summary(fetched_data, evaluation):
             else:
                 dire_hero_id.append(pick['hero_id'])
         else:
-            banned_heroes_id.append(pick['hero_id'])
+            banned_heroes_id.append(pick['hero_id'])         
 
     dire_picks = ', '.join(get_hero_name_by_id(dire_hero_id))
     radiant_picks = ', '.join(get_hero_name_by_id(radiant_hero_id))
     bans = ', '.join(get_hero_name_by_id(banned_heroes_id))
     winner = 'Radiant' if fetched_data['radiant_win'] else 'Dire'
-    rounded_eval = round(evaluation, 2)
+    rounded_eval = str(round(evaluation, 2))
     favour = 'Radiant' if round(evaluation) else 'Dire'
 
     summary = 'The match {0}, started {1}, and lasted {2}. The game is played in skill group {3}\n' \
         'The radiant team is: {4}\nThe dire team is: {5}\nThe bans are: {6}\nThe winning team is {7}\n' \
-              'The evaluation for this game is {8}, favouring the {9}'.format(
+              'The evaluation for this game is {8}, favouring the {9}\n'.format(
                     match_id,
                     start_time,
                     duration,
@@ -136,14 +136,15 @@ def evaluate_picks(net, samples, hero_id):
     hero_names = get_hero_name_by_id(hero_id)
 
     id_with_eval = []
-    for i in range(len(evaluations)):
-        id_with_eval.append([hero_names[i], evaluations[i] * 100])
+    for i in range(len(hero_names)):
+        id_with_eval.append([hero_names[i], evaluations[i]])
 
     return sorted(id_with_eval, key=lambda x: x[1])
 
 
 if __name__ == '__main__':
-    net_name = input('Enter name of network:')
+    net_name = 'trained_model' #input('Enter name of network:')
+    print('Loading model')
     net = models.load_model(net_name)
 
     mode = 'None'
@@ -151,14 +152,19 @@ if __name__ == '__main__':
         mode = input('Do you want to:\n1 - Evaluate match?\n2 - Draft suggestion?\n')
 
     if mode == '1':
-        match_id = int(input('Enter match id of the match you want to evaluate:'))
-        fetched_data, match_sample = get_match_by_id(match_id)
-        print(match_sample)
-        evaluation = evaluate_matches(net, match_sample[0])
-        print_summary(fetched_data, evaluation[0])
+        match_id = 1
+        while match_id:
+            try: 
+                match_id = int(input('Enter match id of the match you want to evaluate:'))
+                fetched_data, match_sample = get_match_by_id(match_id)
+                evaluation = evaluate_matches(net, match_sample[0])
+                print_summary(fetched_data, evaluation[0])
+
+            except TypeError:
+                print('Match id was invalid or could not be parsed, try a different id')
 
     elif mode == '2':
-        is_radiant = int(input('Enter 1 if you are radiant enter 0 if you are dire:'))
+        is_radiant = int(input('Enter 1 if you are radiant, enter 0 if you are dire:'))
         allied_heroes = list(map(int, input('Enter your 4 allied heroes by heroID separated by commas:').split(',')))
         enemy_heroes = list(map(int, input('Enter your 5 enemy heroes by heroID separated by commas:').split(',')))
         banned_heroes = list(map(int, input('Enter any banned hero by heroID separated by commas:').split(',')))
@@ -171,9 +177,9 @@ if __name__ == '__main__':
 
         print('Worst picks')
         for result in results[:15]:
-            print(result[0].ljust(30), result[1])
+            print(result[0].ljust(30), round(result[1], 3))
         print('...')
         for result in results[-15:]:
-            print(result[0].ljust(30), result[1])
+            print(result[0].ljust(30), round(result[1], 3))
         print('Best picks')
 

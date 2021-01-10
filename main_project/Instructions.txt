@@ -1,0 +1,80 @@
+Instructions:
+Deep leaning applied to drafting heroes in Dota 2
+Isak Nyberg 1, Rahul Kothuri 2
+1Email Address isaknyb@kth.se
+2Email Address kothuri@kth.se
+
+
+main.py
+    This is the final product. When run in python 3.8 (pytorch is not supported for 
+    python 3.9) it will prompt you whether you want to (1) evaluate an existing match
+    or (2) evaluate a manually inputted match. The user can choose either by entering
+    the digit 1 or 2.
+
+    1 - When evaluating an existing match the user must input the match id of the 
+    desired match. Due to how some matches are processed by Valve, some matches are
+    simply not usable as the draft is invalid as a result of a resent update to the 
+    pick and ban system. Also when requesting specific matches the medal is anonymous
+    and only a skill group is visible. There is a function that approximates the 
+    medal  based on skill group instead. Here is a list of valid match IDs that can 
+    be used:
+    5780602112, 5779154977, 5776619872, 5777801504, 5776737023
+    taken from:
+        https://www.dotabuff.com/matches/5780602112
+        https://www.dotabuff.com/matches/5779154977
+        https://www.dotabuff.com/matches/5776619872
+        https://www.dotabuff.com/matches/5777801504
+        https://www.dotabuff.com/matches/5776737023
+        https://www.dotabuff.com/matches/5772386730
+
+    Thereafter the system will print a summary of the game including the model's 
+    evaluation of the game. The user can now choose to enter a new match id to have it
+    Parsed or to quit the program with a keyboard interrupt.
+
+
+    2 - When entering a manual game the user will first be asked if they are playing
+    on the radiant or dire team. The user must enter 1 for radiant and 0 for dire.
+    thereafter the user will enter the 4 allied heroes by hero id. Consult the 
+    hero_dict.txt for a list of all hero names. However there are some examples 
+    further down. There after the user will enter the 5 enemy heroes by id. Then
+    The user must enter the banned heroes, if there are none then just enter 0. Then
+    the match duration, this is up to the user to determine but on average a match
+    will last 40 minutes so that is a good input. Lastly the user must input their 
+    rank. The average rank is 35, but the user should know their own rank. The model 
+    will evaluate the match for every possible pick and return a list of a few of the
+    worst picks and a few of the best picks along with their evaluation. 
+
+    Example 1:
+    source: https://www.dotabuff.com/matches/5780602112
+    team: 1
+    Allied heroes: 68, 84, 2, 44
+    Enemy heroes: 31, 86, 17, 4, 70
+    banned heroes: 119, 1, 105, 82, 93, 12
+    duration: 85
+    medal: 20
+    Picked hero: Zuus
+
+    Example 3:
+    source: https://www.dotabuff.com/matches/5772386730
+    team: 1
+    Allied heroes: 91, 51, 95, 43
+    Enemy heroes: 86, 103, 23, 16, 63
+    banned heroes: 10, 65, 6
+    duration: 27
+    medal: 90
+    picked hero: monkey_king
+
+    Example 4:
+    source: https://www.dotabuff.com/matches/5776737023
+    team: 0
+    Allied heroes: 123, 26, 108, 70
+    Enemy heroes: 79, 129, 86, 6, 11
+    banned heroes: 97, 34, 63, 44
+    duration: 26
+    medal: 90
+    picked hero: morphling 
+
+
+
+
+

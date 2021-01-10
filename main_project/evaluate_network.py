@@ -75,18 +75,10 @@ if __name__ == '__main__':
     print('Total predictions:', len(eval_labels))
     print('Percentage:', sum(accurate_predictions) / len(eval_labels) * 100)
 
-    max_index = flat_raw_predictions.index(max(flat_raw_predictions))
-    min_index = flat_raw_predictions.index(min(flat_raw_predictions))
-    print('Highest rated match:', match_ids[max_index], accurate_predictions[max_index], flat_raw_predictions[max_index])
-    print('Lowest rated match:', match_ids[min_index], accurate_predictions[min_index], flat_raw_predictions[min_index])
-
     x_set = []
     y_set = []
     volume = []
     format_predictions = [[abs(prediction - 0.5)] for prediction in flat_raw_predictions]
-
-    for i in range(10):
-        print(i/20, len(get_samples(format_predictions, 0, max_value=100, min_value=i/20))/len(format_predictions))
 
     for i in range(1, 70):
         match_id = get_samples(format_predictions, 0, max_value=(i + 0.5) / 100, min_value=(i - 0.5) / 100)
@@ -106,7 +98,7 @@ if __name__ == '__main__':
     y_set = []
     volume = []
     format_predictions = [[prediction] for prediction in flat_raw_predictions]
-    for i in range(1, 100):
+    for i in range(1, 100, 2):
         match_id = get_samples(format_predictions, 0, max_value=(i+1)/100, min_value=(i-1)/100)
         if len(match_id) == 0:
             continue
