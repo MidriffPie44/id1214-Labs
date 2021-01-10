@@ -10,7 +10,7 @@ import csv
 
 num_heroes = 129  # not really but the hero id do not match
 input_shape = num_heroes + num_heroes + 1  # plus one because 0 is not a hero id
-hidden_shape = input_shape//3 * 2
+hidden_shape = input_shape//2
 
 
 def create_new_seq_model():
