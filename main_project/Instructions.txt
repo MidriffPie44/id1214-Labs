@@ -84,6 +84,8 @@ match_downloader:
     Combine control + c to stop the download, do not interrupt the program while saving. 
     
     The full data file can be accessed under: https://github.com/IsakNyberg/dota2_matches
+    However it is up to the user who downloads these matches to separate them into training and
+    Into evaluation sampels. 
 
 train_network.py:
     The number of training and evaluation samples need to be manually changed in the file.
