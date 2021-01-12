@@ -5,7 +5,7 @@ Isak Nyberg 1, Rahul Kothuri 2
 2Email Address kothuri@kth.se
 
 
-main.py
+main.py:
     This is the final product. When run in python 3.8 (pytorch is not supported for 
     python 3.9) it will prompt you whether you want to (1) evaluate an existing match
     or (2) evaluate a manually inputted match. The user can choose either by entering
@@ -73,6 +73,28 @@ main.py
     duration: 26
     medal: 90
     picked hero: morphling 
+
+
+To build the same network execute the following programs:
+
+match_downloader:
+    The downloader will ask what file to save the matches to: enter for example 'data.csv'
+    Then it will ask what id to start from, entering 0 will make it download the most resent games,
+    Entering a match id will make it download matches that were played before the game entered.
+    Combine control + c to stop the download, do not interrupt the program while saving. 
+    
+    The full data file can be accessed under: https://github.com/IsakNyberg/dota2_matches
+
+train_network.py:
+    The number of training and evaluation samples need to be manually changed in the file.
+    The program will ask what to name the network, enter for example 'new_network'
+    It will generate the training data, train the model with 250 epochs and then print out the 
+    Accuracy as well as some sample predictions.
+
+    main.py can now be edited to use the new model instead of the old one.
+
+
+
 
 
 
