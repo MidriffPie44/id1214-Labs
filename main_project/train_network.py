@@ -84,6 +84,9 @@ def predict_with_model(model, samples):
 
 
 if __name__ == '__main__':
+    training_samples = 100
+    eval_samples = 10
+
     model_name = ''
     while not model_name:
         model_name = input('Enter name of new model:')
@@ -91,8 +94,8 @@ if __name__ == '__main__':
     t = time.time()
 
     print('Starting')
-    data_samples, data_labels, match_ids = create_training_data(1500000*2, min_medal=0, max_medal=100, file='data.csv')
-    eval_samples, eval_labels, _ = create_training_data(10000, min_medal=0, max_medal=100, file='evaluation.csv')
+    data_samples, data_labels, match_ids = create_training_data(training_samples, min_medal=0, max_medal=100, file='data.csv')
+    eval_samples, eval_labels, _ = create_training_data(eval_samples, min_medal=0, max_medal=100, file='evaluation.csv')
     print('Generating training data:', time.time()-t)
     t = time.time()
 
